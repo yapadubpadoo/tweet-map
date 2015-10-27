@@ -10,3 +10,6 @@ branches:
 
 install:
   - composer install
+
+script:
+  - phpunit tests/TwitterSeachTest.php
