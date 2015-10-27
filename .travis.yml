@@ -7,3 +7,6 @@ php:
 branches:
   only:
     - master
+
+install:
+  - composer install
