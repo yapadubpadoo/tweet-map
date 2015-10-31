@@ -31,22 +31,22 @@ class TwitterSearch extends Model
         $expire_at = date('Y-m-d H:i:s', time()+(60*60)); // next 1 hour 
         if (isset($raw_tweets->statuses)) {
             foreach ($raw_tweets->statuses as $raw_tweet) {
-                $tweet = new TweetsCaches;
-                $tweet->seach_location_hash = $seach_location_hash;
-                $tweet->expire_at = $expire_at;
-                $tweet->tweet_id = $raw_tweet->id;
+                $tweet_cache = new TweetsCaches;
+                $tweet_cache->seach_location_hash = $seach_location_hash;
+                $tweet_cache->expire_at = $expire_at;
+                $tweet_cache->tweet_id = $raw_tweet->id;
                 
                 if($raw_tweet->geo !== null && is_array($raw_tweet->geo)) {
-                    $tweet->tweet_lat = $raw_tweet->geo[0];
-                    $tweet->tweet_lon = $raw_tweet->geo[1];
+                    $tweet_cache->tweet_lat = $raw_tweet->geo[0];
+                    $tweet_cache->tweet_lon = $raw_tweet->geo[1];
                 }
-                $tweet->tweet_message =  $raw_tweet->text;
-                $tweet->tweet_at = $raw_tweet->created_at;
-                $tweet->user_id = $raw_tweet->user->id;
-                $tweet->user_name = $raw_tweet->user->name;
-                $tweet->profile_image_url = $raw_tweet->user->profile_image_url;
-                $tweet->save();
-                $cached_tweets[] = $tweet;
+                $tweet_cache->tweet_message =  $raw_tweet->text;
+                $tweet_cache->tweet_at = $raw_tweet->created_at;
+                $tweet_cache->user_id = $raw_tweet->user->id;
+                $tweet_cache->user_name = $raw_tweet->user->name;
+                $tweet_cache->profile_image_url = $raw_tweet->user->profile_image_url;
+                $tweet_cache->save();
+                $cached_tweets[] = $tweet_cache;
             }
         }
         return $cached_tweets;
@@ -58,7 +58,7 @@ class TwitterSearch extends Model
         $seach_location_hash = md5($lat.', '.$lon);
         $tweets = TweetsCaches::getTweetsFromCacheByLocationHash($seach_location_hash);
         // no cache or tweets caches are expired
-        // search from API and the store to tweets_caches
+        // search from API and then store to tweets_caches
         if (count($tweets) == 0) {
             $raw_tweets = Twitter::getSearch($parameters);
             $tweets = TwitterSearch::cacheTweets($seach_location_hash, $raw_tweets);
