@@ -17,7 +17,7 @@ class CreateTweetsCachesTable extends Migration
             $table->timestamps();
             $table->string('seach_location_hash', 32);
             $table->string('seach_location_name', 255);
-            $table->decimal('tweet_id', 10, 8);
+            $table->bigInteger('tweet_id');
             $table->decimal('tweet_lat', 10, 8);
             $table->decimal('tweet_lon', 11, 8);
             $table->string('tweet_message', 140);
