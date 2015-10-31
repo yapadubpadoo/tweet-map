@@ -15,10 +15,10 @@ class TwitterSearchTest extends TestCase
         $this->assertEquals(31, $miles);
     }
 
-    public function testSearchWithValidGEOCodeShouldReturnTweets()
-    {
-        // Siam Paragon
-        $tweets = TwitterSearch::searchWithGEO($lat = 13.7468299, $lon = 100.5327397);
-        $this->assertObjectHasAttributes('statuses', $tweets);
-    }
+    // public function testSearchWithValidGEOCodeShouldReturnTweets()
+    // {
+    //     // Siam Paragon
+    //     $tweets = TwitterSearch::searchWithGEO($lat = 13.7468299, $lon = 100.5327397);
+    //     $this->assertObjectHasAttributes('statuses', $tweets);
+    // }
 }
