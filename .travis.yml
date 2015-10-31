@@ -10,6 +10,9 @@ branches:
   only:
     - master
 
+before_install:
+  - mysql -e "create database IF NOT EXISTS tweet_map;" -uroot
+
 install:
   - composer install
   - php artisan migrate --force
