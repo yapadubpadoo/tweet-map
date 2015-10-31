@@ -22,11 +22,12 @@ class CreateTweetsCachesTable extends Migration
             $table->decimal('tweet_lon', 11, 8);
             $table->string('tweet_message', 140);
             $table->bigInteger('user_id');
-            $table->string('user_screen_name', 255);
+            $table->string('user_name', 255);
             $table->text('profile_image_url');
+            $table->string('tweet_at', 255);
             $table->dateTime('expire_at');
             // keys
-            $table->unique(['seach_location_hash', 'tweet_id']);
+            $table->unique(['seach_location_hash', 'tweet_id', 'expire_at']);
             $table->index(['expire_at', 'seach_location_hash']);
         });
     }
