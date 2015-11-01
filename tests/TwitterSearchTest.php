@@ -54,6 +54,6 @@ class TwitterSearchTest extends TestCase
 
         $seach_location_hash = md5('13.87003723, 100.54855017');
         $cached_tweets = TwitterSearch::cacheTweets($seach_location_hash, $raw_tweets);
-        $this->assertEquals(2, count($cached_tweets));
+        $this->assertEquals(1, count($cached_tweets));
     }
 }

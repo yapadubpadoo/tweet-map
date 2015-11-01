@@ -31,22 +31,21 @@ class TwitterSearch extends Model
         $expire_at = date('Y-m-d H:i:s', time()+(60*60)); // next 1 hour 
         if (isset($raw_tweets->statuses)) {
             foreach ($raw_tweets->statuses as $raw_tweet) {
-                $tweet_cache = new TweetsCaches;
-                $tweet_cache->seach_location_hash = $seach_location_hash;
-                $tweet_cache->expire_at = $expire_at;
-                $tweet_cache->tweet_id = $raw_tweet->id;
-                
-                if($raw_tweet->geo !== null && is_array($raw_tweet->geo)) {
-                    $tweet_cache->tweet_lat = $raw_tweet->geo[0];
-                    $tweet_cache->tweet_lon = $raw_tweet->geo[1];
+                if($raw_tweet->geo !== null && is_array($raw_tweet->geo->coordinates)) {
+                    $tweet_cache = new TweetsCaches;
+                    $tweet_cache->seach_location_hash = $seach_location_hash;
+                    $tweet_cache->expire_at = $expire_at;
+                    $tweet_cache->tweet_id = $raw_tweet->id;
+                    $tweet_cache->tweet_lat = $raw_tweet->geo->coordinates[0];
+                    $tweet_cache->tweet_lon = $raw_tweet->geo->coordinates[1];
+                    $tweet_cache->tweet_message =  $raw_tweet->text;
+                    $tweet_cache->tweet_at = $raw_tweet->created_at;
+                    $tweet_cache->user_id = $raw_tweet->user->id;
+                    $tweet_cache->user_name = $raw_tweet->user->name;
+                    $tweet_cache->profile_image_url = $raw_tweet->user->profile_image_url;
+                    $tweet_cache->save();
+                    $cached_tweets[] = $tweet_cache;
                 }
-                $tweet_cache->tweet_message =  $raw_tweet->text;
-                $tweet_cache->tweet_at = $raw_tweet->created_at;
-                $tweet_cache->user_id = $raw_tweet->user->id;
-                $tweet_cache->user_name = $raw_tweet->user->name;
-                $tweet_cache->profile_image_url = $raw_tweet->user->profile_image_url;
-                $tweet_cache->save();
-                $cached_tweets[] = $tweet_cache;
             }
         }
         return $cached_tweets;
