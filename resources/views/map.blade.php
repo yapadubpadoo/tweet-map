@@ -81,12 +81,10 @@
     });
     
     function searchForTweets() {
+      map.removeMarkers();
       GMaps.geocode({
         address: $('#city-input').val(),
         callback: function(results, status) {
-
-          map.removeMarkers();
-
           if (status == 'OK') {
             var place = results[0].formatted_address;
             var latlng = results[0].geometry.location;
@@ -103,6 +101,7 @@
                   addTweetMarker(tweet);
                 });
             });
+            map.fitZoom();
             map.setCenter(lat, lon);
           }
         }
