@@ -35,7 +35,7 @@
       margin-top: 10px;
     }
 
-    #history-wrapper {
+    #search-history-wrapper {
 
       margin-top: 10px;
     }
@@ -51,19 +51,28 @@
   <div id="gmap"></div>
   <div id="control-wrapper" class="container overlap">
     <div class="row">
-      <div id="" class="col-xs-4 col-md-2"></div>
+      <div class="col-xs-4 col-md-2"></div>
       <div class="col-xs-8 col-md-8">
         <form id="search-form">
           <div id="search-wrapper" class="input-group">
               <input id="city-input" type="text" class="form-control" placeholder="Search for Tweets in city" autocomplete="off">
               <span class="input-group-btn">
                 <button id="search-button" class="btn btn-default" type="submit">Search</button>
-                <button id="search-button" class="btn btn-default" type="button">History</button>
+                <button id="history-button" class="btn btn-default" type="button" onclick="toggleSearchHistory();">History</button>
               </span>
           </div>
         <form>
       </div>
     </div>
+  </div>
+  <div id="search-history-wrapper" class="container" style="display:none;">
+    <div class="col-xs-4"></div>
+    <div class="col-xs-4">
+      <div><button id="search-button" class="btn btn-default" type="button" onclick="toggleSearchHistory();">Back to Tweets</button></div>
+      <div id="history-list">
+      </div>
+    </div>
+    <div class="col-xs-4"></div>
   </div>
   <script>
     var map;
@@ -132,12 +141,35 @@
     }
 
     function saveSearchHistory(location) {
-      var history = Cookies.get('tweet-map-history');
-      if(history==undefined) {
-        history = [];
+      var search_history = Cookies.getJSON('tweet-map-history');
+      if (search_history==undefined) {
+        search_history = [];
+      } else if (search_history.indexOf(location)<0) {
+        search_history.push(location);
+        Cookies.set('tweet-map-history', search_history);
       }
-      history[location] = location;
-      console.log(history);
+    }
+
+    function toggleSearchHistory() {
+      $('#gmap').toggle();
+      $('#control-wrapper').toggle();
+      $('#search-history-wrapper').toggle();
+      $('#history-list').html('');
+      $('#history-list').html()
+      var search_history = Cookies.getJSON('tweet-map-history');
+      // console.log(search_history);
+      $(search_history).each(function(index, location){
+        var history_id = 'search-history-'+index;
+        $('#history-list').append('<div id="'+history_id+'">'+location+'</div>');
+        $('#'+history_id).data("location-name", location);
+        $('#'+history_id).click(function(){
+          var search_location = $(this).data("location-name");
+          console.log(search_location);
+          $('#city-input').val(search_location);
+          $('#search-button').click();
+          toggleSearchHistory();
+        });
+      });
     }
   </script>
 </body>
