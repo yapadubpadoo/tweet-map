@@ -37,7 +37,7 @@ class TweetsCachesTest extends TestCase
         $tweet->tweet_lat = $lat;
         $tweet->tweet_lon = $lon;
         $tweet->tweet_message = 'This message is valid';
-        $tweet->expire_at = date('Y-m-d H:i:s', time()+(60*60));
+        $tweet->expire_at = date('Y-m-d H:i:s', time() + (60 * 60));
         $tweet->save();
     }
 
