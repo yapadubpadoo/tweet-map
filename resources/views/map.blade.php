@@ -4,6 +4,7 @@
   <title>Tweet Map</title>
   <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
   <script src="{{url('/js/gmap/gmaps.js')}}"></script>
+  <script src="{{url('/js/js-cookie-master/src/js.cookie.js')}}"></script>
   <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
@@ -96,6 +97,7 @@
               lon: lon
             };
             $('#city-input').val(place);
+            saveSearchHistory(place);
             $.getJSON('/search/tweet', search_data, function(tweets){
                 $.each(tweets, function(index, tweet){
                   addTweetMarker(tweet);
@@ -127,6 +129,15 @@
         },
         // animation: google.maps.Animation.DROP
       });
+    }
+
+    function saveSearchHistory(location) {
+      var history = Cookies.get('tweet-map-history');
+      if(history==undefined) {
+        history = [];
+      }
+      history[location] = location;
+      console.log(history);
     }
   </script>
 </body>
