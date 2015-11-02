@@ -35,11 +35,11 @@
     }
 
     #history-wrapper {
-      
+
       margin-top: 10px;
     }
 
-    @media (max-width:800px) { 
+    @media (max-width:800px) {
       #control-wrapper {
         /*margin-top: 30px;*/
       }
@@ -48,13 +48,13 @@
 </head>
 <body>
   <div id="gmap"></div>
-  <div id="control-wrapper" class="container overlap"> 
+  <div id="control-wrapper" class="container overlap">
     <div class="row">
       <div id="" class="col-xs-4 col-md-2"></div>
       <div class="col-xs-8 col-md-8">
         <form id="search-form">
           <div id="search-wrapper" class="input-group">
-              <input id="city-input" type="text" class="form-control" placeholder="Search for tweets in city" autocomplete="off">
+              <input id="city-input" type="text" class="form-control" placeholder="Search for Tweets in city" autocomplete="off">
               <span class="input-group-btn">
                 <button id="search-button" class="btn btn-default" type="submit">Search</button>
                 <button id="search-button" class="btn btn-default" type="button">History</button>
@@ -65,27 +65,69 @@
     </div>
   </div>
   <script>
-    var map = new GMaps({
-      el: '#gmap',
-      lat: 13.7468299,
-      lng: 100.5327397
+    var map;
+    $(document).ready(function(){
+      map = new GMaps({
+        el: '#gmap',
+        lat: 13.7468299,
+        lng: 100.5327397
+      });
+      map.setZoom(12);
+
+      $('#search-form').submit(function(e){
+        e.preventDefault();
+        searchForTweets();
+      });
     });
-    map.setZoom(12);
-    $('#search-form').submit(function(e){
-      e.preventDefault();
+    
+    function searchForTweets() {
       GMaps.geocode({
         address: $('#city-input').val(),
         callback: function(results, status) {
-          if (status == 'OK') {
-            var latlng = results[0].geometry.location;
-            map.setCenter(latlng.lat(), latlng.lng());
-            var place_name = result[0].formatted_address;
-            $('#city-input').val(place_name);
 
+          map.removeMarkers();
+
+          if (status == 'OK') {
+            var place = results[0].formatted_address;
+            var latlng = results[0].geometry.location;
+            var lat = latlng.lat();
+            var lon = latlng.lng();
+            var search_data = {
+              place: place,
+              lat: lat,
+              lon: lon
+            };
+            $('#city-input').val(place);
+            $.getJSON('/search/tweet', search_data, function(tweets){
+                $.each(tweets, function(index, tweet){
+                  addTweetMarker(tweet);
+                });
+            });
+            map.setCenter(lat, lon);
           }
         }
       });
-    });
+    }
+    
+
+    function addTweetMarker(tweet) {
+      var icon = '/img/Twitter.png';
+      var lat = tweet.tweet_lat;
+      var lng = tweet.tweet_lon;
+      var title = tweet.tweet_at;
+      var content = '<img src="'+tweet.profile_image_url+'" style="padding:10px;" align="left">'
+        +tweet.tweet_message+'<br><i>'+tweet.tweet_at+'</i>';
+
+      map.addMarker({
+        icon: icon,
+        lat: lat,
+        lng: lng,
+        title: title,
+        infoWindow: {
+          content : content
+        }
+      });
+    }
   </script>
 </body>
 </html>
