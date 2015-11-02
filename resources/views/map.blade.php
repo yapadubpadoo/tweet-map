@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title></title>
+  <title>Tweet Map</title>
   <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
   <script src="{{url('/js/gmap/gmaps.js')}}"></script>
   <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
@@ -38,21 +38,30 @@
       
       margin-top: 10px;
     }
+
+    @media (max-width:800px) { 
+      #control-wrapper {
+        /*margin-top: 30px;*/
+      }
+    }
   </style>
 </head>
 <body>
   <div id="gmap"></div>
   <div id="control-wrapper" class="container overlap"> 
     <div class="row">
-      <div id="" class="col-xs-12 col-sm-6 col-md-8">
-        <div id="search-wrapper" class="input-group">
-          <input type="text" class="form-control" placeholder="Search for place">
-          <span class="input-group-btn">
-            <button class="btn btn-default" type="button">Search</button>
-          </span>
-        </div>
+      <div id="" class="col-xs-4 col-md-2"></div>
+      <div class="col-xs-8 col-md-8">
+        <form id="search-form">
+          <div id="search-wrapper" class="input-group">
+              <input id="city-input" type="text" class="form-control" placeholder="Search for tweets in city" autocomplete="off">
+              <span class="input-group-btn">
+                <button id="search-button" class="btn btn-default" type="submit">Search</button>
+                <button id="search-button" class="btn btn-default" type="button">History</button>
+              </span>
+          </div>
+        <form>
       </div>
-      <div id="history-wrapper" class="col-xs-6 col-md-4"><div>History</div></div>
     </div>
   </div>
   <script>
@@ -62,18 +71,22 @@
       lng: 100.5327397
     });
     map.setZoom(12);
-    GMaps.geocode({
-      address: $('#address').val(),
-      callback: function(results, status) {
-        if (status == 'OK') {
-          var latlng = results[0].geometry.location;
-          map.setCenter(latlng.lat(), latlng.lng());
-          map.addMarker({
-            lat: latlng.lat(),
-            lng: latlng.lng()
-          });
+    $('#search-form').submit(function(e){
+      e.preventDefault();
+      GMaps.geocode({
+        address: $('#city-input').val(),
+        callback: function(results, status) {
+          if (status == 'OK') {
+            console.log(results);
+            var latlng = results[0].geometry.location;
+            map.setCenter(latlng.lat(), latlng.lng());
+            map.addMarker({
+              lat: latlng.lat(),
+              lng: latlng.lng()
+            });
+          }
         }
-      }
+      });
     });
   </script>
 </body>
