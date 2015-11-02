@@ -125,7 +125,8 @@
         title: title,
         infoWindow: {
           content : content
-        }
+        },
+        // animation: google.maps.Animation.DROP
       });
     }
   </script>

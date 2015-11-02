@@ -12,15 +12,24 @@ class TwitterSearch extends Model
     public static function searchWithGEO($place_name, $lat, $lon)
     {
         $miles = self::convertKilometersToMiles(Config::get('twitter_map.twitter_search_radius_in_km'));
+        $pages = self::convertKilometersToMiles(Config::get('twitter_map.number_of_search_pagination'));
         $parameters = [
             'q' => $place_name,
             'geocode' => $lat . ',' . $lon . ',' . $miles . 'mi',
         ];
         $tweets = Twitter::getSearch($parameters);
-        if(isset($tweets->search_metadata) && isset($tweets->search_metadata->next_results)) {
+        $tweets = TwitterSearch::getNextSearchResult($tweets, $lat, $lon, $pages);
+        
+        return $tweets;
+    }
+
+    public static function getNextSearchResult($tweets, $lat, $lon, $pages = 2)
+    {
+        while ($pages>0 && isset($tweets->search_metadata) && isset($tweets->search_metadata->next_results)) {
             // twitter api return newest result first, so
             // use lowest id - 1 from current result as a max id for next request
             $max_id = $tweets->statuses[count($tweets->statuses)-1]->id - 1;
+            $miles = self::convertKilometersToMiles(Config::get('twitter_map.twitter_search_radius_in_km'));
             $parameters = [
                 'q' => '',
                 'geocode' => $lat . ',' . $lon . ',' . $miles . 'mi',
@@ -28,13 +37,9 @@ class TwitterSearch extends Model
             ];
             $tweets_next_page = Twitter::getSearch($parameters);
             $tweets->statuses = array_merge($tweets->statuses, $tweets_next_page->statuses);
+            $pages--;
         }
         return $tweets;
-    }
-
-    public static function getNextSearchResult($lat, $lon)
-    {
-        
     }
 
     public static function convertKilometersToMiles($km)
