@@ -1,6 +1,5 @@
 <?php
 
-use \stdClass;
 use App\TwitterSearch;
 
 class TwitterSearchTest extends TestCase
@@ -16,12 +15,13 @@ class TwitterSearchTest extends TestCase
         $this->assertEquals(31, $miles);
     }
 
-    // public function testSearchWithValidGEOCodeShouldReturnTweets()
-    // {
-    //     // Siam Paragon
-    //     $tweets = TwitterSearch::searchWithGEO($lat = 13.7468299, $lon = 100.5327397);
-    //     $this->assertObjectHasAttributes('statuses', $tweets);
-    // }
+    public function testSearchWithValidGEOCodeShouldReturnTweets()
+    {
+        // Bangkok
+        // 13.7244426,100.3529131
+        $tweets = TwitterSearch::searchWithGEO($place = 'Bangkok', $lat = 13.7244426, $lon = 100.3529131);
+        $this->assertObjectHasAttribute('statuses', $tweets);
+    }
 
     public function testCacheTweetsFromRawTweetsShouldReturnCachedTweets()
     {

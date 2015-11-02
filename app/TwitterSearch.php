@@ -9,11 +9,11 @@ use App\TweetsCaches;
 
 class TwitterSearch extends Model
 {
-    public static function searchWithGEO($lat, $lon)
+    public static function searchWithGEO($place_name, $lat, $lon)
     {
     	$miles = self::convertKilometersToMiles(Config::get('twitter_map.twitter_search_radius_in_km'));
     	$parameters = [
-    		'q' => '',
+    		'q' => $place_name,
     		'geocode' => $lat.','.$lon.','.$miles.'mi'
     	];
     	$tweets = Twitter::getSearch($parameters);
@@ -52,14 +52,14 @@ class TwitterSearch extends Model
     }
 
 
-    public static function getTweetsFromGeo($lat, $lon)
+    public static function getTweetsFromGeo($place_name, $lat, $lon)
     {
         $seach_location_hash = md5($lat.', '.$lon);
         $tweets = TweetsCaches::getTweetsFromCacheByLocationHash($seach_location_hash);
         // no cache or tweets caches are expired
         // search from API and then store to tweets_caches
         if (count($tweets) == 0) {
-            $raw_tweets = Twitter::getSearch($parameters);
+            $raw_tweets = TwitterSearch::searchWithGEO($place_name, $lat, $lon);
             $tweets = TwitterSearch::cacheTweets($seach_location_hash, $raw_tweets);
         }
         return $tweets;
