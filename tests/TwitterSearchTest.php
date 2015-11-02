@@ -15,13 +15,13 @@ class TwitterSearchTest extends TestCase
         $this->assertEquals(31, $miles);
     }
 
-    public function testSearchWithValidGEOCodeShouldReturnTweets()
-    {
-        // Bangkok
-        // 13.7244426,100.3529131
-        $tweets = TwitterSearch::searchWithGEO($place = 'Bangkok', $lat = 13.7244426, $lon = 100.3529131);
-        $this->assertObjectHasAttribute('statuses', $tweets);
-    }
+    // public function testSearchWithValidGEOCodeShouldReturnTweets()
+    // {
+    //     // Bangkok
+    //     // 13.7244426,100.3529131
+    //     $tweets = TwitterSearch::searchWithGEO($place = 'Bangkok', $lat = 13.7244426, $lon = 100.3529131);
+    //     $this->assertObjectHasAttribute('statuses', $tweets);
+    // }
 
     public function testCacheTweetsFromRawTweetsShouldReturnCachedTweets()
     {
