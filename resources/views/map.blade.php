@@ -35,9 +35,13 @@
       margin-top: 10px;
     }
 
-    #search-history-wrapper {
+    #search-history-wrapper, #history-list {
 
       margin-top: 10px;
+    }
+
+    .history-item {
+      cursor: pointer;
     }
 
     @media (max-width:800px) {
@@ -66,13 +70,11 @@
     </div>
   </div>
   <div id="search-history-wrapper" class="container" style="display:none;">
-    <div class="col-xs-4"></div>
-    <div class="col-xs-4">
+    <div class="col-xs-12">
       <div><button id="search-button" class="btn btn-default" type="button" onclick="toggleSearchHistory();">Back to Tweets</button></div>
-      <div id="history-list">
-      </div>
+      <table id="history-list" class="table table-striped">
+      </table>
     </div>
-    <div class="col-xs-4"></div>
   </div>
   <script>
     var map;
@@ -155,12 +157,11 @@
       $('#control-wrapper').toggle();
       $('#search-history-wrapper').toggle();
       $('#history-list').html('');
-      $('#history-list').html()
       var search_history = Cookies.getJSON('tweet-map-history');
       // console.log(search_history);
       $(search_history).each(function(index, location){
         var history_id = 'search-history-'+index;
-        $('#history-list').append('<div id="'+history_id+'">'+location+'</div>');
+        $('#history-list').append('<tr class="history-item"id="'+history_id+'"><td>'+location+'</td></tr>');
         $('#'+history_id).data("location-name", location);
         $('#'+history_id).click(function(){
           var search_location = $(this).data("location-name");
