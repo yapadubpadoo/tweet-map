@@ -2,16 +2,13 @@
 <html>
 <head>
   <title>Tweet Map</title>
+  <link rel="icon" href="{{url('/img/Twitter.ico')}}" type="image/icon" sizes="16x16">
   <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
   <script src="{{url('/js/gmap/gmaps.js')}}"></script>
   <script src="{{url('/js/js-cookie-master/src/js.cookie.js')}}"></script>
   <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
   <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
-
-  <!-- Optional theme -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css" integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
-
   <!-- Latest compiled and minified JavaScript -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
   <style type="text/css">
@@ -88,15 +85,17 @@
 
       $('#search-form').submit(function(e){
         e.preventDefault();
+        // loading marker
+        $('#search-button').html('Loading');
         searchForTweets();
       });
     });
     
     function searchForTweets() {
-      map.removeMarkers();
       GMaps.geocode({
         address: $('#city-input').val(),
         callback: function(results, status) {
+          map.removeMarkers();
           if (status == 'OK') {
             var place = results[0].formatted_address;
             var latlng = results[0].geometry.location;
@@ -113,9 +112,12 @@
                 $.each(tweets, function(index, tweet){
                   addTweetMarker(tweet);
                 });
+                setTimeout(function(){
+                  map.fitZoom();
+                  map.setCenter(lat, lon);
+                  $('#search-button').html('Search');
+                }, 100);
             });
-            map.fitZoom();
-            map.setCenter(lat, lon);
           }
         }
       });
@@ -137,8 +139,7 @@
         title: title,
         infoWindow: {
           content : content
-        },
-        // animation: google.maps.Animation.DROP
+        }
       });
     }
 
@@ -148,7 +149,7 @@
         search_history = [];
       } else if (search_history.indexOf(location)<0) {
         search_history.push(location);
-        Cookies.set('tweet-map-history', search_history);
+        Cookies.set('tweet-map-history', search_history, { expires: 1 });
       }
     }
 
@@ -156,21 +157,24 @@
       $('#gmap').toggle();
       $('#control-wrapper').toggle();
       $('#search-history-wrapper').toggle();
-      $('#history-list').html('');
       var search_history = Cookies.getJSON('tweet-map-history');
-      // console.log(search_history);
-      $(search_history).each(function(index, location){
-        var history_id = 'search-history-'+index;
-        $('#history-list').append('<tr class="history-item"id="'+history_id+'"><td>'+location+'</td></tr>');
-        $('#'+history_id).data("location-name", location);
-        $('#'+history_id).click(function(){
-          var search_location = $(this).data("location-name");
-          console.log(search_location);
-          $('#city-input').val(search_location);
-          $('#search-button').click();
-          toggleSearchHistory();
+
+      // check whether search-history-wrapper being display or not
+      if(($('#search-history-wrapper').css('display')) == 'block') {
+        $('#history-list').html('');
+        $(search_history).each(function(index, location){
+          var history_id = 'search-history-'+index;
+          $('#history-list').append('<tr class="history-item"id="'+history_id+'"><td>'+location+'</td></tr>');
+          $('#'+history_id).data("location-name", location);
+          $('#'+history_id).click(function(){
+            var search_location = $(this).data("location-name");
+            // simulate search with existing functions, current flow
+            $('#city-input').val(search_location);
+            $('#search-button').click();
+            toggleSearchHistory();
+          });
         });
-      });
+      }
     }
   </script>
 </body>
