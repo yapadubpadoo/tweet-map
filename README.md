@@ -1,3 +1,6 @@
+#Tweet Map		
+[![Build Status](https://api.travis-ci.org/yapadubpadoo/tweet-map.svg)](https://travis-ci.org/yapadubpadoo/tweet-map)
+
 Tweet-map alllow user to search for any city and display Twitter messages around that city on Google map.
 
 This project use
