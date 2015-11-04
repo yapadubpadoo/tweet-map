@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Tweet Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="{{url('/img/Twitter.ico')}}" type="image/icon" sizes="16x16">
   <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
   <script src="{{url('/js/gmap/gmaps.js')}}"></script>
@@ -46,14 +47,19 @@
         /*margin-top: 30px;*/
       }
     }
+
+    @media (max-width:414px) {
+      #control-wrapper {
+        /*margin-top: 60px;*/
+      }
+    }
   </style>
 </head>
 <body>
   <div id="gmap"></div>
   <div id="control-wrapper" class="container overlap">
     <div class="row">
-      <div class="col-xs-4 col-md-2"></div>
-      <div class="col-xs-8 col-md-8">
+      <div class="col-xs-12 col-md-12">
         <form id="search-form">
           <div id="search-wrapper" class="input-group">
               <input id="city-input" type="text" class="form-control" placeholder="Search for Tweets in city" autocomplete="off">
@@ -67,7 +73,7 @@
     </div>
   </div>
   <div id="search-history-wrapper" class="container" style="display:none;">
-    <div class="col-xs-12">
+    <div class="col-xs-12 col-md-12">
       <div><button id="search-button" class="btn btn-default" type="button" onclick="toggleSearchHistory();">Back to Tweets</button></div>
       <table id="history-list" class="table table-striped">
       </table>
@@ -79,7 +85,9 @@
       map = new GMaps({
         el: '#gmap',
         lat: 13.7468299,
-        lng: 100.5327397
+        lng: 100.5327397,
+        zoomControl: true,
+        mapTypeControl: false
       });
       map.setZoom(12);
 
