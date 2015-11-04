@@ -5,14 +5,17 @@ Tweet-map alllow user to search for any city and display Twitter messages around
 
 This project use
 
-Laravel 5.1
+- Laravel 5.1
 https://github.com/laravel/framework
 
-Twitter API for Laravel 4/5
+- Twitter API for Laravel 4/5
 https://github.com/thujohn/twitter
 
-gmap.js
+- gmap.js
 https://hpneo.github.io/gmaps/
+
+- Bootstrap
+http://getbootstrap.com/
 
 ##Setup
 
@@ -30,9 +33,20 @@ At root project directory, run the following command
 php artisan migrate
 ```
 
+###Application configuration
+There is a configuration file for Tweet-Map application located at "tweet-map/config/twitter_map.php" that allow to adjust
+```php
+<?php 
+
+return [
+	'twitter_search_radius_in_km'	=>	50,
+	'tweets_caches_life_time_in_minutes' => 60,
+	'number_of_search_pagination' => 2 // number of pages for loop trough search result
+];
+```
+
 ###Twitter configuration
-Rename configuration file in Laravel config folder
-rename
+Create a configuration file in "tweet-map/config" by rename
 ```text
 ttwitter.template.php
 ```
