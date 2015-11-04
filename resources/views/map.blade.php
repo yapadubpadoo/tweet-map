@@ -86,7 +86,7 @@
         el: '#gmap',
         lat: 13.7468299,
         lng: 100.5327397,
-        zoomControl: true,
+        zoomControl: false,
         mapTypeControl: false
       });
       map.setZoom(12);
