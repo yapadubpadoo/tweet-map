@@ -153,22 +153,29 @@
 
     function saveSearchHistory(location) {
       var search_history = Cookies.getJSON('tweet-map-history');
+      console.log(search_history);
       if (search_history==undefined) {
         search_history = [];
-      } else if (search_history.indexOf(location)<0) {
-        search_history.push(location);
-        Cookies.set('tweet-map-history', search_history, { expires: 1 });
       }
+      if (search_history.indexOf(location)<0) {
+        console.log('pushing ... '+location);
+        search_history.push(location);
+      }
+      Cookies.set('tweet-map-history', search_history, { 
+        expires: 1 
+      });
     }
 
     function toggleSearchHistory() {
       $('#gmap').toggle();
       $('#control-wrapper').toggle();
       $('#search-history-wrapper').toggle();
-      var search_history = Cookies.getJSON('tweet-map-history');
 
       // check whether search-history-wrapper being display or not
       if(($('#search-history-wrapper').css('display')) == 'block') {
+        var search_history = Cookies.getJSON('tweet-map-history');
+        console.log('reading search history');
+        console.log(search_history);
         $('#history-list').html('');
         $(search_history).each(function(index, location){
           var history_id = 'search-history-'+index;
